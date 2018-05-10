@@ -13,6 +13,7 @@ export class AppService {
   private AUTH_URL = environment.api_url + 'api/auth';
   private TOKEN_KEY = 'token';
   private NAME_KEY = 'name';
+  private APP_KEY = 'app';
 
   user = {
     firstName: '',
@@ -40,6 +41,11 @@ export class AppService {
     return !!localStorage.getItem(this.TOKEN_KEY);
   }
 
+  private returnToApp() {
+    const app = localStorage.getItem(this.APP_KEY);
+    window.location.replace(environment.base_url + app);
+  }
+
   private authenticate(res) {
     const authResponse = res.json();
     if (!authResponse.token) {
@@ -47,7 +53,7 @@ export class AppService {
     }
     localStorage.setItem(this.TOKEN_KEY, authResponse.token);
     localStorage.setItem(this.NAME_KEY, authResponse.firstName);
-    this.router.navigate(['/']);
+    this.returnToApp();
   }
 
   private authRequest(endpoint, payload) {
@@ -72,7 +78,7 @@ export class AppService {
   logout() {
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.NAME_KEY);
-    this.router.navigate(['/']);
+    this.returnToApp();
   }
 
   getUser() {
