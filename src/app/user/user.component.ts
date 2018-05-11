@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { AppService } from '../services/app.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-user',
@@ -9,11 +9,11 @@ import { AppService } from '../services/app.service';
       <h1>Edit Info</h1>
       <div class="field-container">
         <mat-form-field>
-          <input matInput [(ngModel)]="app.user.firstName" placeholder="First Name">
+          <input matInput [(ngModel)]="auth.user.firstName" placeholder="First Name">
         </mat-form-field>
         <br />
         <mat-form-field>
-          <input matInput [(ngModel)]="app.user.lastName" placeholder="Last Name">
+          <input matInput [(ngModel)]="auth.user.lastName" placeholder="Last Name">
         </mat-form-field>
         <button mat-raised-button color="primary" (click)="updateUser()">Save Changes</button>
       </div>
@@ -23,14 +23,14 @@ import { AppService } from '../services/app.service';
 })
 export class UserComponent implements OnInit {
 
-  constructor(public app: AppService) { }
+  constructor(public auth: AuthService) { }
 
   ngOnInit() {
-    this.app.getUser();
+    this.auth.getUser();
   }
 
   updateUser() {
-    this.app.updateUser();
+    this.auth.updateUser();
   }
 
 }

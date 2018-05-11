@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 
-import { AppService } from '../services/app.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -43,11 +43,11 @@ export class RegisterComponent {
 
   form;
 
-  constructor(private fb: FormBuilder, private app: AppService) {
+  constructor(private fb: FormBuilder, private auth: AuthService) {
     this.form = fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      userName: ['', [Validators.required, app.emailValid()]],
+      userName: ['', [Validators.required, auth.emailValid()]],
       password: ['', Validators.required],
       confirmPassword: ['', Validators.required]
     }, { validator: matchingFields('password', 'confirmPassword') });
@@ -55,7 +55,7 @@ export class RegisterComponent {
 
   onSubmit() {
     if (this.form.valid) {
-      this.app.register(this.form.value);
+      this.auth.register(this.form.value);
     }
   }
 

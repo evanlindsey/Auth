@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 
 import { NavComponent } from './nav/nav.component';
 
-import { AppService } from './services/app.service';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -18,10 +18,10 @@ export class AppComponent implements OnInit {
 
   loading = false;
 
-  constructor(private app: AppService) { }
+  constructor(private auth: AuthService) { }
 
   ngOnInit() {
-    this.app.isLoading.subscribe((state) => this.loading = state);
+    this.auth.isLoading.subscribe((state) => this.loading = state);
   }
 
 }

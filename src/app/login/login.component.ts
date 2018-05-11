@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 
-import { AppService } from '../services/app.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -28,16 +28,16 @@ export class LoginComponent {
 
   form;
 
-  constructor(private fb: FormBuilder, public app: AppService) {
+  constructor(private fb: FormBuilder, public auth: AuthService) {
     this.form = fb.group({
-      userName: ['', [Validators.required, app.emailValid()]],
+      userName: ['', [Validators.required, auth.emailValid()]],
       password: ['', Validators.required]
     });
   }
 
   onLogin() {
     if (this.form.valid) {
-      this.app.login(this.form.value);
+      this.auth.login(this.form.value);
     }
   }
 

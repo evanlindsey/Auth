@@ -5,14 +5,14 @@ import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
 
+import { AuthGuardService } from './auth-guard.service';
+
 @Injectable()
-export class AppService {
+export class AuthService {
 
   isLoading: EventEmitter<boolean> = new EventEmitter(true);
 
-  private AUTH_URL = environment.api_url + 'api/auth';
-  private TOKEN_KEY = 'token';
-  private NAME_KEY = 'name';
+  private AUTH_ENDPOINT = environment.api_url + 'api/auth';
   private APP_KEY = 'app';
 
   user = {
@@ -20,30 +20,26 @@ export class AppService {
     lastName: ''
   };
 
-  constructor(private http: Http, private sb: MatSnackBar, private router: Router) { }
+  constructor(private authGuard: AuthGuardService, private http: Http, private sb: MatSnackBar, private router: Router) { }
+
+  get tokenHeader() {
+    let header = new Headers;
+    header = new Headers({ 'Authorization': 'Bearer ' + localStorage.getItem(this.authGuard.TOKEN_KEY) });
+    return new RequestOptions({ headers: header });
+  }
 
   private handleError(error) {
     this.isLoading.emit(false);
     this.sb.open(error, 'close');
   }
 
-  get tokenHeader() {
-    let header = new Headers;
-    header = new Headers({ 'Authorization': 'Bearer ' + localStorage.getItem(this.TOKEN_KEY) });
-    return new RequestOptions({ headers: header });
-  }
-
-  get name() {
-    return localStorage.getItem(this.NAME_KEY);
-  }
-
-  get isAuthenticated() {
-    return !!localStorage.getItem(this.TOKEN_KEY);
-  }
-
   private returnToApp() {
     const app = localStorage.getItem(this.APP_KEY);
-    window.location.replace(environment.base_url + app);
+    if (app !== null) {
+      window.location.replace(environment.base_url + app);
+    } else {
+      this.router.navigate(['/']);
+    }
   }
 
   private authenticate(res) {
@@ -51,14 +47,14 @@ export class AppService {
     if (!authResponse.token) {
       return;
     }
-    localStorage.setItem(this.TOKEN_KEY, authResponse.token);
-    localStorage.setItem(this.NAME_KEY, authResponse.firstName);
+    localStorage.setItem(this.authGuard.TOKEN_KEY, authResponse.token);
+    localStorage.setItem(this.authGuard.NAME_KEY, authResponse.firstName);
     this.returnToApp();
   }
 
   private authRequest(endpoint, payload) {
     this.isLoading.emit(true);
-    this.http.post(this.AUTH_URL + endpoint, payload).subscribe(res => {
+    this.http.post(this.AUTH_ENDPOINT + endpoint, payload).subscribe(res => {
       this.isLoading.emit(false);
       this.authenticate(res);
     }, error => {
@@ -75,15 +71,9 @@ export class AppService {
     this.authRequest('/login', loginData);
   }
 
-  logout() {
-    localStorage.removeItem(this.TOKEN_KEY);
-    localStorage.removeItem(this.NAME_KEY);
-    this.returnToApp();
-  }
-
   getUser() {
     this.isLoading.emit(true);
-    this.http.get(this.AUTH_URL + '/me', this.tokenHeader).pipe(map(res => res.json())).subscribe(res => {
+    this.http.get(this.AUTH_ENDPOINT + '/me', this.tokenHeader).pipe(map(res => res.json())).subscribe(res => {
       this.isLoading.emit(false);
       this.user.firstName = res.firstName;
       this.user.lastName = res.lastName;
@@ -94,9 +84,9 @@ export class AppService {
 
   updateUser() {
     this.isLoading.emit(true);
-    this.http.put(this.AUTH_URL + '/update', this.user, this.tokenHeader).pipe(map(res => res.json())).subscribe(res => {
+    this.http.put(this.AUTH_ENDPOINT + '/update', this.user, this.tokenHeader).pipe(map(res => res.json())).subscribe(res => {
       this.isLoading.emit(false);
-      localStorage.setItem(this.NAME_KEY, res.firstName);
+      localStorage.setItem(this.authGuard.NAME_KEY, res.firstName);
     }, error => {
       this.handleError(error.statusText);
     });

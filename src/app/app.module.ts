@@ -25,7 +25,7 @@ import { RegisterComponent } from './register/register.component';
 import { UserComponent } from './user/user.component';
 
 // Services
-import { AppService } from './services/app.service';
+import { AuthService } from './services/auth.service';
 import { AuthGuardService as AuthGuard } from './services/auth-guard.service';
 
 // Router
@@ -68,7 +68,7 @@ const routes = [{
     MatToolbarModule,
     LoadingModule
   ],
-  providers: [AppService, AuthGuard],
+  providers: [AuthService, AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
