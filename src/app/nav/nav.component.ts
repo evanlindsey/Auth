@@ -6,8 +6,7 @@ import { AuthGuardService } from '../services/auth-guard.service';
   selector: 'app-nav',
   template: `
     <mat-toolbar>
-      <button mat-button routerLink="/">Home</button>
-      <a mat-button href="https://github.com/evanlindsey" target="_blank">GitHub</a>
+      <a mat-button href="https://github.com/evanlindsey/evanlindsey-auth" target="_blank">GitHub</a>
       <span style="flex: 1 1 auto;"></span>
       <button *ngIf="!auth.isAuthenticated" mat-button routerLink="/login">Login</button>
       <button *ngIf="!auth.isAuthenticated" mat-button routerLink="/register">Register</button>
