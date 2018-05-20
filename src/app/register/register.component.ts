@@ -60,7 +60,7 @@ export class RegisterComponent implements OnInit {
     }
   }
 
-  private onRegister() {
+  onRegister() {
     if (this.form.valid) {
       this.auth.register(this.form.value);
     }

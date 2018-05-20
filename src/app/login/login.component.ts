@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  private onLogin() {
+  onLogin() {
     if (this.form.valid) {
       this.auth.login(this.form.value);
     }
