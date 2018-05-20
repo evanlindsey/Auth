@@ -1,14 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 
 import { AuthService } from '../services/auth.service';
+import { AuthGuardService } from '../services/auth-guard.service';
 
 @Component({
   selector: 'app-register',
   template: `
     <mat-card>
       <h1>Register</h1>
-      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <form [formGroup]="form" (ngSubmit)="onRegister()">
         <div class="field-container">
           <mat-form-field>
             <input matInput placeholder="First Name" formControlName="firstName">
@@ -39,11 +40,11 @@ import { AuthService } from '../services/auth.service';
   `,
   styles: []
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
 
   form;
 
-  constructor(private fb: FormBuilder, private auth: AuthService) {
+  constructor(private fb: FormBuilder, private auth: AuthService, private authGuard: AuthGuardService) {
     this.form = fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
@@ -53,7 +54,13 @@ export class RegisterComponent {
     }, { validator: matchingFields('password', 'confirmPassword') });
   }
 
-  onSubmit() {
+  ngOnInit() {
+    if (this.authGuard.isAuthenticated) {
+      this.authGuard.returnToApp();
+    }
+  }
+
+  private onRegister() {
     if (this.form.valid) {
       this.auth.register(this.form.value);
     }

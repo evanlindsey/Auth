@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 
 import { AuthService } from '../services/auth.service';
+import { AuthGuardService } from '../services/auth-guard.service';
 
 @Component({
   selector: 'app-login',
@@ -24,18 +25,24 @@ import { AuthService } from '../services/auth.service';
   `,
   styles: []
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
   form;
 
-  constructor(private fb: FormBuilder, public auth: AuthService) {
+  constructor(private fb: FormBuilder, public auth: AuthService, private authGuard: AuthGuardService) {
     this.form = fb.group({
       userName: ['', [Validators.required, auth.emailValid()]],
       password: ['', Validators.required]
     });
   }
 
-  onLogin() {
+  ngOnInit() {
+    if (this.authGuard.isAuthenticated) {
+      this.authGuard.returnToApp();
+    }
+  }
+
+  private onLogin() {
     if (this.form.valid) {
       this.auth.login(this.form.value);
     }

@@ -13,7 +13,6 @@ export class AuthService {
   isLoading: EventEmitter<boolean> = new EventEmitter(true);
 
   private AUTH_ENDPOINT = environment.api_url + 'api/auth';
-  private APP_KEY = 'app';
 
   user = {
     firstName: '',
@@ -33,15 +32,6 @@ export class AuthService {
     this.sb.open(error, 'close');
   }
 
-  private returnToApp() {
-    const app = localStorage.getItem(this.APP_KEY);
-    if (app !== null) {
-      window.location.replace(environment.base_url + app);
-    } else {
-      this.router.navigate(['/']);
-    }
-  }
-
   private authenticate(res) {
     const authResponse = res.json();
     if (!authResponse.token) {
@@ -49,7 +39,7 @@ export class AuthService {
     }
     localStorage.setItem(this.authGuard.TOKEN_KEY, authResponse.token);
     localStorage.setItem(this.authGuard.NAME_KEY, authResponse.firstName);
-    this.returnToApp();
+    this.authGuard.returnToApp();
   }
 
   private authRequest(endpoint, payload) {

@@ -8,8 +8,8 @@ import { AuthGuardService } from '../services/auth-guard.service';
     <mat-toolbar>
       <a mat-button href="https://github.com/evanlindsey/evanlindsey-auth" target="_blank">GitHub</a>
       <span style="flex: 1 1 auto;"></span>
-      <button *ngIf="!auth.isAuthenticated" mat-button routerLink="/login">Login</button>
-      <button *ngIf="!auth.isAuthenticated" mat-button routerLink="/register">Register</button>
+      <button *ngIf="!auth.isAuthenticated" mat-button routerLink="/login" skipLocationChange>Login</button>
+      <button *ngIf="!auth.isAuthenticated" mat-button routerLink="/register" skipLocationChange>Register</button>
       <button *ngIf="auth.isAuthenticated" mat-button routerLink="/user">Welcome {{auth.name}}</button>
       <button *ngIf="auth.isAuthenticated" mat-button (click)="auth.logout()">Logout</button>
     </mat-toolbar>
